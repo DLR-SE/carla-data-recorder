@@ -1,0 +1,25 @@
+{
+    "GPS": {
+        "type": "gnss",
+        "translation": [-1.32975389,  0.01078824,  0.78694287],
+        "rotation": [1.0, 0.0, 0.0, 1.0],
+        "horizontal_accuracy": 2.0,
+        "vertical_accuracy": 3.0,
+        "capture_frequency": 10,
+        "carla_parameters_override": {
+            "noise_seed": 42
+        }
+    },
+    "IMU": {
+        "type": "imu",
+        "translation": [-1.32975389,  0.01078824,  0.78694287],
+        "rotation": [1.0, 0.0, 0.0, 1.0],
+        "accel_noise_density": 100.0,
+        "gyro_noise_density": 0.004,
+        "capture_frequency": 10,
+        "carla_parameters_override": {
+            "noise_seed": 42
+        }
+    },
+    "meta": {}
+}

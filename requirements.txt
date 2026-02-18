@@ -1,0 +1,20 @@
+# Base libraries
+numpy
+packaging
+pandas
+pyquaternion
+scipy
+tqdm
+typing-extensions
+
+# I/O libraries
+av
+DracoPy
+imageio
+pillow
+pyarrow
+tagpy
+trimesh
+
+# Other
+carla

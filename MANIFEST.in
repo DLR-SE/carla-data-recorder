@@ -1,0 +1,1 @@
+include cdr/sensor_configs/*.json

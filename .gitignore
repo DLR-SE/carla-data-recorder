@@ -1,0 +1,7 @@
+.venv*
+build
+carla_data_recorder.egg-info
+typings
+__pycache__
+.coverage
+cdr/utils/blueprints_bounding_boxes_lut.json

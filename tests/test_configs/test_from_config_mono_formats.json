@@ -1,0 +1,62 @@
+{
+    "host": "localhost",
+    "port": 2000,
+    "timeout": 10.0,
+    "ego_rolename": "hero",
+    "simulation_fps": 10,
+    "sensor_config": "./2cam_1lidar_1gnss_1imu.json",
+    "static_sensor_config": null,
+    "recording_outputs": {
+        "CAMERA:RGB": {
+            "format": "mp4",
+            "format_parameters": {}
+        },
+        "CAMERA:DEPTH": {
+            "format": "parquet",
+            "format_parameters": {}
+        },
+        "CAMERA:SEMSEG": {
+            "format": "parquet",
+            "format_parameters": {}
+        },
+        "CAMERA:INSTSEG": {
+            "format": "parquet",
+            "format_parameters": {}
+        },
+        "CAMERA:BB2D": {
+            "format": "parquet",
+            "format_parameters": {}
+        },
+        "CAMERA:BB3D": {
+            "format": "parquet",
+            "format_parameters": {}
+        },
+        "LIDAR:XYZI": {
+            "format": "parquet",
+            "format_parameters": {}
+        },
+        "GNSS": {
+            "format": "parquet",
+            "format_parameters": {}
+        },
+        "IMU": {
+            "format": "parquet",
+            "format_parameters": {}
+        },
+        "TRAJECTORIES": {
+            "format": "parquet",
+            "format_parameters": {"keyframe_every": 2}
+        }
+    },
+    "delay_recording_seconds": 0.0,
+    "delay_recording_ticks": 0,
+    "enable_ssaa": false,
+    "ssaa_factor": 2.0,
+    "annotations_traverse_translucency": false,
+    "prng_seed": 42,
+    "raise_exceptions": true,
+    "override_existing_data": false,
+    "delete_on_error": true,
+    "allow_user_interrupt": false,
+    "verbose": true
+}

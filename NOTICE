@@ -1,0 +1,8 @@
+CARLA Data Recorder
+Copyright 2026 German Aerospace Center (DLR)
+Institute Systems Engineering for Future Mobility (SE)
+
+This product contains software (https://github.com/carla-simulator/scenario_runner) developed
+by Intel Corporation, licensed under the MIT License.
+
+Any non-bundled dependency of CARLA Data Recorder comes with its own license. By installing the dependencies, it is your responsibility to ensure your compliance with the respective licensing terms.

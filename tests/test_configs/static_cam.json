@@ -1,0 +1,16 @@
+{
+    "CAM_STATIC": {
+        "type": "camera",
+        "translation": [100.0, -100.0, 6.2],
+        "rotation": [0.5, -0.5, 0.5, -0.5 ],
+        "image_width": 10,
+        "image_height": 10,
+        "fov": 70,
+        "capture_frequency": 10,
+        "carla_parameters_override": {
+            "blur_amount": 0,
+            "motion_blur_intensity": 0
+        }
+    },
+    "meta": {}
+}

@@ -1,0 +1,88 @@
+{
+    "CAM_FRONT_LEFT": {
+        "type": "camera",
+        "translation": [ 0.19025595, 0.50051938,  0.72596033],
+        "rotation": [0.6812088525125634 , -0.6687507165046241 ,  0.2101702448905517 , -0.21108161122114324],
+        "image_width": 1600,
+        "image_height": 900,
+        "fov": 70,
+        "capture_frequency": 10
+    },
+    "CAM_FRONT": {
+        "type": "camera",
+        "translation": [0.33700568, 0.00475453, 0.71391292],
+        "rotation": [0.5077241387638071 , -0.4973392230703816 ,  0.49837167536166627, -0.4964832014373754 ],
+        "image_width": 1600,
+        "image_height": 900,
+        "fov": 70,
+        "capture_frequency": 10
+    },
+    "CAM_FRONT_RIGHT": {
+        "type": "camera",
+        "translation": [ 0.19582566, -0.49907871,  0.73649368],
+        "rotation": [0.20335173766558642, -0.19146333228946724,  0.6785710044972951 , -0.6793609166212989 ],
+        "image_width": 1600,
+        "image_height": 900,
+        "fov": 70,
+        "capture_frequency": 10
+    },
+    "CAM_BACK_RIGHT": {
+        "type": "camera",
+        "translation": [-0.32554827, -0.46720295,  0.76950858],
+        "rotation": [0.13819187705364147, -0.13796718183628456, -0.6893329941542625 ,  0.697630335509333  ],
+        "image_width": 1600,
+        "image_height": 900,
+        "fov": 70,
+        "capture_frequency": 10
+    },
+    "CAM_BACK": {
+        "type": "camera",
+        "translation": [-1.32975389,  0.01078824,  0.78694287],
+        "rotation": [0.5067997344989889 , -0.4977567019405021 , -0.4987849934090844 ,  0.496594225837321  ],
+        "image_width": 1600,
+        "image_height": 900,
+        "fov": 110,
+        "capture_frequency": 10
+    },
+    "CAM_BACK_LEFT": {
+        "type": "camera",
+        "translation": [-0.33647952,  0.48305813,  0.78110154],
+        "rotation": [0.7048620297871717 , -0.6907306801461466 , -0.11209091960167808,  0.11617345743327073],
+        "image_width": 1600,
+        "image_height": 900,
+        "fov": 70,
+        "capture_frequency": 10
+    },
+    "LIDAR_TOP": {
+        "type": "lidar",
+        "translation": [-0.399207, 0.0, 1.05919],
+        "rotation": [0.706749235646644, -0.015300993788500868, 0.01739745181256607, -0.7070846669051719],
+        "num_layers": 32,
+        "points_per_second": 1390000,
+        "range": 80.0,
+        "horizontal_fov": 360.0,
+        "upper_fov": 10.0,
+        "lower_fov": -30.0,
+        "accuracy": 0.02,
+        "capture_frequency": 20
+    },
+    "GPS": {
+        "type": "gnss",
+        "translation": [-1.32975389,  0.01078824,  0.78694287],
+        "rotation": [1.0, 0.0, 0.0, 1.0],
+        "horizontal_accuracy": 2.0,
+        "vertical_accuracy": 3.0,
+        "capture_frequency": 20
+    },
+    "IMU": {
+        "type": "imu",
+        "translation": [-1.32975389,  0.01078824,  0.78694287],
+        "rotation": [1.0, 0.0, 0.0, 1.0],
+        "accel_noise_density": 100.0,
+        "gyro_noise_density": 0.004,
+        "capture_frequency": 20
+    },
+    "meta": {
+        "carla_optimal_vehicle": "vehicle.citroen.c3"
+    }
+}

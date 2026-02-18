@@ -1,0 +1,62 @@
+{
+    "host": "localhost",
+    "port": 2000,
+    "timeout": 10.0,
+    "ego_rolename": "hero",
+    "simulation_fps": 20,
+    "sensor_config": "nuscenes",
+    "static_sensor_config": null,
+    "recording_outputs": {
+        "CAMERA:RGB": {
+            "format": "jpg",
+            "format_parameters": {}
+        },
+        "CAMERA:DEPTH": {
+            "format": "exr",
+            "format_parameters": {}
+        },
+        "CAMERA:SEMSEG": {
+            "format": "png",
+            "format_parameters": {}
+        },
+        "CAMERA:INSTSEG": {
+            "format": "png",
+            "format_parameters": {}
+        },
+        "CAMERA:BB2D": {
+            "format": "json",
+            "format_parameters": {}
+        },
+        "CAMERA:BB3D": {
+            "format": "json",
+            "format_parameters": {}
+        },
+        "LIDAR:XYZI": {
+            "format": "ply",
+            "format_parameters": {}
+        },
+        "GNSS": {
+            "format": "json",
+            "format_parameters": {}
+        },
+        "IMU": {
+            "format": "json",
+            "format_parameters": {}
+        },
+        "TRAJECTORIES": {
+            "format": "json",
+            "format_parameters": {}
+        }
+    },
+    "delay_recording_seconds": 0.0,
+    "delay_recording_ticks": 0,
+    "enable_ssaa": false,
+    "ssaa_factor": 2.0,
+    "annotations_traverse_translucency": null,
+    "prng_seed": 42,
+    "raise_exceptions": true,
+    "override_existing_data": false,
+    "delete_on_error": true,
+    "allow_user_interrupt": false,
+    "verbose": false
+}

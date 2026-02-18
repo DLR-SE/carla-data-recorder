@@ -1,0 +1,18 @@
+{
+    "CAM_FRONT": {
+        "type": "camera",
+        "translation": [0.33700568, 0.00475453, 0.71391292],
+        "rotation": [0.5077241387638071 , -0.4973392230703816 ,  0.49837167536166627, -0.4964832014373754 ],
+        "image_width": 10,
+        "image_height": 10,
+        "fov": 70,
+        "capture_frequency": 10,
+        "carla_parameters_override": {
+            "blur_amount": 0,
+            "motion_blur_intensity": 0
+        }
+    },
+    "meta": {
+        "carla_optimal_vehicle": "vehicle.citroen.c3"
+    }
+}

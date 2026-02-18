@@ -1,0 +1,91 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "carla-data-recorder"
+version = "0.9.0"
+requires-python = ">= 3.7"
+dependencies = [
+  "numpy",
+  "pandas",
+  "pyquaternion",
+  "scipy",
+  "tqdm",
+  "typing-extensions",
+  "av",
+  "DracoPy",
+  "imageio",
+  "pillow",
+  "pyarrow",
+  "tagpy",
+  "trimesh",
+  "carla"
+]
+authors = [
+  {name = "Thies de Graaff", email = "thies.degraaff@dlr.de"},
+]
+maintainers = [
+  {name = "Thies de Graaff", email = "thies.degraaff@dlr.de"}
+]
+description = "The CARLA Data Recorder is a software that enables the recording of structured datasets based on simulation runs in the simulator CARLA."
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["CARLA", "simulation", "recording", "datasets"]
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+
+  "Topic :: Games/Entertainment :: Simulation",
+
+  "License :: OSI Approved :: Apache Software License",
+
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Repository = "https://github.com/DLR-SE/carla-data-recorder"
+
+[tool.setuptools.package-dir]
+cdr = "cdr"
+
+##### Testing #####
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "coverage",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
+
+[tool.coverage.run]
+omit = [
+  "config.py",
+  "config-3.py",
+  "cdr/utils/environment_objects.py"  # we do not test this, since it is very CARLA-specific
+]
+dynamic_context = "test_function"
+
+[tool.coverage.report]
+
+exclude_also = [
+  'raise NotImplementedError',  # we don't test for non-implemented lines
+  'else:\n\s+raise TypeError',  # we don't test for type errors in else-branches
+  'except .*\n\s+raise NotImplementedError',  # we don't test for non-implemented except-branches
+  '\s+pass',  # we don't test pass statements
+  'def .*:\n\s+"""(\n.*)+\s+"""\n\s+\.\.\.',  # we don't test placeholder functions with docstrings
+  '# no cover: start(?s:.)*?# no cover: stop',
+]

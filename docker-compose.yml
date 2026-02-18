@@ -1,0 +1,52 @@
+services:
+  carla:
+    image: carla-data-recorder/carla:${CARLA_VERSION}
+    build:
+      context: .
+      additional_contexts:
+        vulkan: /usr/share/vulkan
+        glvnd: /usr/share/glvnd
+      dockerfile: ./docker/CARLA.Dockerfile
+      args:
+        CARLA_VERSION: ${CARLA_VERSION}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+              device_ids: ["${GPU_ID:-0}"]
+    container_name: cdr-carla-${CARLA_VERSION}
+    environment:
+       - DISABLE_AA=${DISABLE_AA}
+    ports:
+      - "2000-2002:2000-2002"
+      - "8000:8000"
+    networks:
+      cdr_network:
+        aliases:
+          - carla_server
+    volumes:
+      - cdr_shared_volume:/workspace/PythonAPI
+
+  cdr:
+    image: carla-data-recorder/cdr:${CARLA_VERSION}
+    build:
+      context: .
+      dockerfile: ./docker/CDR.Dockerfile
+      args:
+        CARLA_VERSION: ${CARLA_VERSION}
+    container_name: cdr-cdr-${CARLA_VERSION}
+    networks:
+      - cdr_network
+    volumes:
+      - cdr_shared_volume:/home/carla/PythonAPI
+    command: bash
+    stdin_open: true
+    tty: true
+
+networks:
+  cdr_network:
+    driver: bridge
+
+volumes:
+  cdr_shared_volume:
