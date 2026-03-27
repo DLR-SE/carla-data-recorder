@@ -24,7 +24,7 @@ For each single recorded simulation, the following directory structure will be c
 
 ```
 |
-|-- metadata.json  # information about the simulation run (map, weather parameters)
+|-- metadata.json  # information about the simulation run (map, weather parameters, num simulation ticks, num frames)
 |-- sensor_configuration.json  # information about the sensors and their configurations
 |-- ground_truth
     |-- 2d_bbs  # 2D bounding boxes for every sensor
