@@ -440,6 +440,8 @@ class CARLADataRecorder(Recorder):
         self.prng_generator = random.Random(self.prng_seed)
 
         self._cur_sim_run_name = None
+        self._metadata = None
+        self._frame_recording_start = None
 
     def _configure_logger(self):
         """
@@ -906,7 +908,7 @@ class CARLADataRecorder(Recorder):
 
         # Write some general metadata about the scenario, assuming that these properties are static
         weather = self._world.get_weather()
-        metadata = {
+        self._metadata = {
             "map": self._world.get_map().name,
             "weather": {
                 "cloudiness": weather.cloudiness,
@@ -924,9 +926,7 @@ class CARLADataRecorder(Recorder):
             }
         }
         if self.annotations_traverse_translucency is not None:
-            metadata['annotations_traverse_translucency'] = self.annotations_traverse_translucency
-        with open(self.cur_simrun_dir / 'metadata.json', 'wt') as file:
-            json.dump(metadata, file)
+            self._metadata['annotations_traverse_translucency'] = self.annotations_traverse_translucency
 
         # Merge the sensor configurations and store it to the data dir
         merged_sensor_config = merge_sensor_configs(self.sensor_config, self.static_sensor_config)
@@ -1127,10 +1127,10 @@ class CARLADataRecorder(Recorder):
         # Notify sensor listeners about the start time of the recording
         world_snapshot = self._world.get_snapshot()
         frame_sim_start, time_sim_start = world_snapshot.timestamp.frame, world_snapshot.timestamp.elapsed_seconds
-        frame_recording_start = frame_sim_start + delay_recording_frames
+        self._frame_recording_start = frame_sim_start + delay_recording_frames
         time_recording_start = time_sim_start + delay_recording_frames * (1. / self.simulation_fps)
         for listener in self._data_listeners.values():
-            listener.set_recording_start(frame_recording_start, time_recording_start)
+            listener.set_recording_start(self._frame_recording_start, time_recording_start)
 
         self._logger.debug('Start worker processes...')
         # Start all processors
@@ -1181,9 +1181,20 @@ class CARLADataRecorder(Recorder):
             wait_and_log(data_processor, name)
 
         self._logger.info('Wait for all data writers to terminate...')
+        num_written_frames = {}
         for name, data_writer in self._data_writers.items():
             self._logger.debug(f'Waiting for writer {name}...')
             wait_and_log(data_writer, name)
+            sensor_name = name.split(':')[0]
+            num_written_frames[sensor_name] = data_writer.get_num_iterations()
+
+        # Collect further metadata and write to disk
+        assert self._metadata is not None
+        assert self._frame_recording_start is not None
+        self._metadata['num_simulated_ticks'] = frame_sim_end - self._frame_recording_start + 1
+        self._metadata['tick_duration'] = 1.0 / self.simulation_fps
+        self._metadata['num_frames'] = num_written_frames
+        save_json(self._metadata, self.cur_simrun_dir / 'metadata.json')
 
         elapsed_time_rec = time.time() - self._t_recording_start
         self._logger.info(f'Finished writing of all data (took {elapsed_time_rec:.3f}s).')

@@ -29,7 +29,7 @@ from queue import Empty
 from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Tuple, TYPE_CHECKING
 from typing_extensions import final
 
-from multiprocessing import Event, Queue
+from multiprocessing import Event, Queue, Value
 if not THREADED or TYPE_CHECKING:
     from multiprocessing import Process
 else:
@@ -415,6 +415,7 @@ class IterativeWorkerMixin(BaseWorkerInterface, metaclass=abc.ABCMeta):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._reached_end = False
+        self._num_iterations = Value('q', 0)
 
     @final
     def work(self):
@@ -425,6 +426,8 @@ class IterativeWorkerMixin(BaseWorkerInterface, metaclass=abc.ABCMeta):
         """
         while not self._reached_end:
             self._work_iteration()
+            if not self._reached_end:  # do not increment for the final element, which just stops the loop
+                self._num_iterations.value += 1
 
     @abc.abstractmethod
     def _work_iteration(self):
@@ -434,6 +437,15 @@ class IterativeWorkerMixin(BaseWorkerInterface, metaclass=abc.ABCMeta):
         which then has to set `self._reached_end` to `True`.
         """
         raise NotImplementedError()
+
+    def get_num_iterations(self) -> int:
+        """
+        Returns the amount of iterations performed by this worker.
+
+        Returns:
+            int: the amount of iterations performed by this worker
+        """
+        return self._num_iterations.value
 
 
 class CARLAClientMixin(BaseWorkerInterface):
