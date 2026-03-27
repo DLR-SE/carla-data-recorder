@@ -76,7 +76,7 @@ class CARLAClient:
             self._world = self._client.get_world()
         return self._world
 
-    def set_world(self, world: Optional[carla.Client]):
+    def set_world(self, world: Optional[carla.World]):
         """
         Explicitly set the given world instance to be returned by `get_world`. This enables different objects that share
         this CARLAClient to all interact with the identical world instance, instead of retrieving individual instances
