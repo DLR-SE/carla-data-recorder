@@ -1185,12 +1185,13 @@ class CARLADataRecorder(Recorder):
         for name, data_writer in self._data_writers.items():
             self._logger.debug(f'Waiting for writer {name}...')
             wait_and_log(data_writer, name)
-            num_written_frames[name] = data_writer.get_num_iterations()
+            sensor_name = name.split(':')[0]
+            num_written_frames[sensor_name] = data_writer.get_num_iterations()
 
         # Collect further metadata and write to disk
         assert self._metadata is not None
         assert self._frame_recording_start is not None
-        self._metadata['num_simulated_ticks'] = frame_sim_end - self._frame_recording_start
+        self._metadata['num_simulated_ticks'] = frame_sim_end - self._frame_recording_start + 1
         self._metadata['tick_duration'] = 1.0 / self.simulation_fps
         self._metadata['num_frames'] = num_written_frames
         save_json(self._metadata, self.cur_simrun_dir / 'metadata.json')
