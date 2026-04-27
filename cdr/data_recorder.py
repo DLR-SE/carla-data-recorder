@@ -943,6 +943,7 @@ class CARLADataRecorder(Recorder):
         # Get the ego vehicle
         ego_vehicle = find_ego_vehicle(self._world, self.ego_rolename)
         self._logger.debug(f'Ego vehicle is: {ego_vehicle}')
+        self._metadata['ego_id'] = ego_vehicle.id
 
         ####################### CREATE DATA LISTENERS #######################
         self._logger.debug('Create data listeners...')
