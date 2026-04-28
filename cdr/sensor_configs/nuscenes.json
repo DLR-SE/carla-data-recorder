@@ -69,7 +69,7 @@
     "GPS": {
         "type": "gnss",
         "translation": [-1.32975389,  0.01078824,  0.78694287],
-        "rotation": [1.0, 0.0, 0.0, 1.0],
+        "rotation": [1.0, 0.0, 0.0, 0.0],
         "horizontal_accuracy": 2.0,
         "vertical_accuracy": 3.0,
         "capture_frequency": 20
@@ -77,7 +77,7 @@
     "IMU": {
         "type": "imu",
         "translation": [-1.32975389,  0.01078824,  0.78694287],
-        "rotation": [1.0, 0.0, 0.0, 1.0],
+        "rotation": [1.0, 0.0, 0.0, 0.0],
         "accel_noise_density": 100.0,
         "gyro_noise_density": 0.004,
         "capture_frequency": 20
