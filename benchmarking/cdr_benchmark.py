@@ -199,8 +199,7 @@ def main():
         data_recorder = DummyRecorder()
     data_recorder.set_num_simulation_runs(len(nums_vehicles) * num_repetitions)
 
-    # Get optimal ego vehicle
-    ego_optimal_vehicle = data_recorder._parse_sensor_configuration(data_recorder.sensor_config_path)[1]['carla_optimal_vehicle']
+    ego_optimal_vehicle = 'vehicle.citroen.c3'
 
     total_durations: Dict[int, List[float]] = {}
     durations_between_ticks: Dict[int, List[List[float]]] = {}
