@@ -49,7 +49,8 @@ COPY --chown=carla:carla patches/scenario_runner.py ${SCENARIO_RUNNER_ROOT}
 ENV CDR_ROOT=/home/carla/carla-data-recorder/
 COPY --chown=carla:carla . ${CDR_ROOT}
 # We replace "localhost" with "carla_server" in all configs, which will be the alias of the container running CARLA, when started with docker compose
-RUN find . -type f -name "*.json" -exec sed -i 's/"host": "localhost"/"host": "carla_server"/g' {} +
+RUN find . -type f -name "*.json" -exec sed -i 's/"host": "localhost"/"host": "carla_server"/g' {} + &&\
+    find . -type f -name "*.py" -exec sed -i "s/default='localhost'/default='carla_server'/g" {} +
 RUN pip install ${CDR_ROOT}
 
 WORKDIR ${SCENARIO_RUNNER_ROOT}
