@@ -4,7 +4,7 @@
     "timeout": 20.0,
     "ego_rolename": "hero",
     "simulation_fps": 20,
-    "sensor_config": "benchmarking/cdr_benchmark_configs/two_cameras.json",
+    "sensor_config": "two_cameras.json",
     "static_sensor_config": null,
     "recording_outputs": {
         "CAMERA:RGB": {
