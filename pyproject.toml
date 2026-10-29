@@ -16,9 +16,9 @@ dependencies = [
   "av",
   "DracoPy",
   "imageio",
+  "mutagen",
   "pillow",
   "pyarrow",
-  "tagpy",
   "trimesh",
   "carla"
 ]

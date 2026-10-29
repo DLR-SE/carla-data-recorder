@@ -11,9 +11,9 @@ typing-extensions
 av
 DracoPy
 imageio
+mutagen
 pillow
 pyarrow
-tagpy
 trimesh
 
 # Other

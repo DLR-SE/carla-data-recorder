@@ -22,7 +22,7 @@ from typing import List, Union
 
 import imageio.v3 as iio
 import numpy as np
-import tagpy
+from mutagen.mp4 import MP4
 
 
 class VideoWriter:
@@ -45,9 +45,12 @@ class VideoWriter:
 
         # Store the frame_ids as CSV in the comment of the video container.
         # ImageIO and PyAV do not support to write a container comment after writing frames to the stream,
-        # so we use tagpy do add the comment, after the file is written.
-        file_ref = tagpy.FileRef(str(self.video_file.resolve()), False)
-        file_ref.tag().comment = ','.join(self.index_frame_ids)
+        # so we use mutagen to add the comment, after the file is written.
+        file_ref = MP4(str(self.video_file.resolve()))
+        if file_ref.tags is None:
+            file_ref.add_tags()
+        assert file_ref.tags is not None
+        file_ref.tags['\xa9cmt'] = [','.join(self.index_frame_ids)]
         file_ref.save()
 
     def __enter__(self):
