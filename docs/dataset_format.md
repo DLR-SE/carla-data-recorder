@@ -3,6 +3,7 @@
 The resulting directory structure and data formats of the individual files are explained in the following.
 
 - [Directory Structure](#directory-structure)
+- [Coordinate System Conventions](#coordinate-system-conventions)
 - [Data Types and Formats](#data-types-and-formats)
     - [Sensors](#sensors)
         - [Camera](#camera)
@@ -58,6 +59,20 @@ The CARLA Data Recorder supports various data formats for the different data typ
 * If distributed file formats are selected (e.g. individual JPG or PNG images), an additional directory layer is added in the above specified leaf-directories, where the directory names correspond to the sensor IDs of the used sensor configuration.
   * The filenames of the individual sensor-related files denote the ID of the frame, as reported by CARLA. They can be used to associate the different files with each other. If the actual timestamp of a frame is required, it can be looked up in the trajectories information (see [Trajectories](#trajectories)) or manually inferred from the tick rate of the sensor/world.
 
+## Coordinate System Conventions
+
+All coordinate-system-related data is stored in a **right-handed** coordinate system, as opposed to CARLA's native left-handed coordinate system. The world coordinate system and the local coordinate systems of the stored sensor data are oriented as follows:
+
+* `x`: forward
+* `y`: left
+* `z`: up
+
+This applies to world coordinates (e.g. the `center`, `velocity`, `acceleration` and `angular_velocity` attributes of [3D Bounding Boxes](#3d-bounding-boxes) and [Trajectories](#trajectories)) as well as to sensor-local coordinates (e.g. the points of [Lidar](#lidar) sensors or the accelerations and angular velocities of [IMU](#imu) sensors). The origin of the world coordinate system is the same as in CARLA. Rotations are stored as quaternions in `(w, x, y, z)` order and follow the right-hand rule.
+
+The translations and rotations in the `sensor_configuration.json` follow the same convention. For dynamic sensors, they describe the sensor pose relative to the ego vehicle, while for static sensors, they describe the sensor pose in world coordinates.
+
+*Note*: Image coordinates are not affected by this convention. They use the usual image coordinate system, where `x` points to the right and `y` points downwards.
+
 ## Data Types and Formats
 
 ### Sensors
@@ -101,7 +116,7 @@ with iio.imopen('path/to/video.mp4', 'r', plugin='pyav') as reader:
 
 #### Lidar
 
-The lidar sensors create point clouds with X,Y,Z positions + intensity of each target hit, which are either stored individually (`ply`) or combined (`parquet`).
+The lidar sensors create point clouds with X,Y,Z positions + intensity of each target hit, which are either stored individually (`ply`) or combined (`parquet`). The point coordinates are given in the sensor's right-handed reference frame, i.e. `x` points forward, `y` points left and `z` points upwards.
 
 * **key**: `LIDAR:XYZI`
 * **format:**
@@ -171,7 +186,7 @@ The Parquet scheme has the columns: `frame_id`, `timestamp`, `altitude`, `latitu
 
 #### IMU
 
-Accelerations and angular velocities measured by IMU sensors are stored for every tick of the simulation, including the corresponding timestamp.
+Accelerations and angular velocities measured by IMU sensors are stored for every tick of the simulation, including the corresponding timestamp. Both are given in the sensor's right-handed reference frame, i.e. `x` points forward, `y` points left and `z` points upwards. The sign of the angular velocity follows the right-hand rule around the respective axis.
 
 * **key**: `IMU`
 * **format:**
@@ -187,12 +202,12 @@ IMU data in a JSON file is stored as a dictionary with the following structure, 
 ```json
 {
     "timestamp": 8.692344621863413e-10,
-    "acceleration": [                    // the acceleration (x,y,z) in the sensor's reference frame [meters/second^2]
+    "acceleration": [                    // the acceleration (x,y,z) in the sensor's right-handed reference frame [meters/second^2]
         -0.2842060327529907,
         1.233566403388977,
         9.872149467468262
     ],
-    "angular_velocity": [                // the angular velocity (x,y,z) in the sensor's reference frame [radians/second]
+    "angular_velocity": [                // the angular velocity (x,y,z) in the sensor's right-handed reference frame [radians/second]
         -0.0008405359112657607,
         0.0005320724449120462,
         -0.06337276101112366
@@ -245,7 +260,7 @@ The Parquet scheme has the columns: `frame_id`, `actors`, where actors is a mapp
 
 #### 3D Bounding Boxes
 
-3D bounding boxes are stored for every tick of each camera sensor. They are filtered based on visibility in the image.
+3D bounding boxes are stored for every tick of each camera sensor. They are filtered based on visibility in the image. All geometric and kinematic attributes are specified in the right-handed world coordinate system (see [Coordinate System Conventions](#coordinate-system-conventions)).
 
 * **key**: `CAMERA:BB3D`
 * **format:**
@@ -262,7 +277,7 @@ The Parquet scheme has the columns: `frame_id`, `actors`, where actors is a mapp
 {
     "2511": {                                    // actor ID
         "class_id": "car",                       // label as in CityScapes
-        "center": [                              // the center point (x,y,z) in world coordinates [meters]
+        "center": [                              // the center point (x,y,z) in right-handed world coordinates [meters]
             -7.363250255584717,
             -119.24063110351562,
             1.0486390590667725
@@ -272,23 +287,23 @@ The Parquet scheme has the columns: `frame_id`, `actors`, where actors is a mapp
             2.241713285446167,
             1.6672759056091309
         ],
-        "rot": [                                 // the orientation as quaternion (w,x,y,z) in world coordinates
+        "rot": [                                 // the orientation as quaternion (w,x,y,z) in right-handed world coordinates
             0.7063115086346321,
             0.0,
             0.0,
             -0.7079011603114307
         ],
-        "velocity": [                            // the velocity (x,y,z) in world coordinates [meters/second]
+        "velocity": [                            // the velocity (x,y,z) in right-handed world coordinates [meters/second]
             -4.488067872898682e-08,
             -1.1511712472156432e-07,
             0.017194384709000587
         ],
-        "acceleration": [                        // the acceleration (x,y,z) in world coordinates [meters/second^2]
+        "acceleration": [                        // the acceleration (x,y,z) in right-handed world coordinates [meters/second^2]
             -8.847708272696764e-07,
             -3.1618124012311455e-06,
             0.1350652575492859
         ],
-        "angular_velocity": [                    // the angular velocity (x,y,z) in world coordinates [radians/second]
+        "angular_velocity": [                    // the angular velocity (x,y,z) in right-handed world coordinates [radians/second]
             -1.7477592336945236e-05,
             -1.4797206858929712e-05,
             1.899147328288109e-08
@@ -454,7 +469,7 @@ instseg = np.frombuffer(row['array_bytes'], dtype=row['dtype']).reshape(row['sha
 
 #### Semantic Lidar
 
-The semantic lidar sensors create point clouds with X,Y,Z positions + the cosine of the incident angle + actor IDs + semantic IDs of each target hit. They are either stored individually (`ply`) or combined (`parquet`).
+The semantic lidar sensors create point clouds with X,Y,Z positions + the cosine of the incident angle + actor IDs + semantic IDs of each target hit. They are either stored individually (`ply`) or combined (`parquet`). The point coordinates are given in the sensor's right-handed reference frame, i.e. `x` points forward, `y` points left and `z` points upwards.
 
 * **key**: `LIDAR:SEMANTIC`
 * **format:**
@@ -497,7 +512,7 @@ semseg_ids = pc.get_attribute_by_name('semseg_id')['data']
 
 #### Trajectories
 
-The trajectories of all actors in the world are stored for every tick of the simulation, i.e. potentially at a higher frequency than other sensors. Each file contains the corresponding timestamp and information about every actor, which has the same attributes as [3D Bounding Boxes](#3d).
+The trajectories of all actors in the world are stored for every tick of the simulation, i.e. potentially at a higher frequency than other sensors. Each file contains the corresponding timestamp and information about every actor, which has the same attributes as [3D Bounding Boxes](#3d-bounding-boxes), i.e. all geometric and kinematic attributes are given in the right-handed world coordinate system (see [Coordinate System Conventions](#coordinate-system-conventions)).
 
 * **key**: `TRAJECTORIES`
 * **format:**

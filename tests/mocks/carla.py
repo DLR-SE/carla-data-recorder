@@ -54,13 +54,18 @@ SENSOR_BP_NAMES_W_ATTR = {
 class ActorMock:
 
     def __init__(self, world: 'WorldMock', actor_id: int, type_id: str, attributes: Optional[Dict[str, str]] = None,
-                 transform: carla.Transform = carla.Transform(), bounding_box: carla.BoundingBox = carla.BoundingBox()):
+                 transform: carla.Transform = carla.Transform(), bounding_box: carla.BoundingBox = carla.BoundingBox(),
+                 velocity: carla.Vector3D = carla.Vector3D(), acceleration: carla.Vector3D = carla.Vector3D(),
+                 angular_velocity: carla.Vector3D = carla.Vector3D()):
         self.world = world
         self.id = actor_id
         self.type_id = type_id
         self.attributes = {} if attributes is None else attributes
         self.transform = transform
         self.bounding_box = bounding_box
+        self.velocity = velocity
+        self.acceleration = acceleration
+        self.angular_velocity = angular_velocity
 
     def get_world(self):
         return self.world
@@ -263,7 +268,8 @@ class WorldMock:
         self.elapsed_seconds += self.fixed_delta_seconds
 
         # Create snapshots of new frame
-        actor_snapshots = [ActorSnapshotMock(actor.id, actor.transform) for actor in self.actors.values()]
+        actor_snapshots = [ActorSnapshotMock(actor.id, actor.transform, actor.velocity, actor.acceleration,
+                                             actor.angular_velocity) for actor in self.actors.values()]
         offset = 1 if invalid else 0
         world_snapshot = WorldSnapshotMock(self.frame + offset, TimestampMock(self.frame, self.elapsed_seconds),
                                            actor_snapshots)
