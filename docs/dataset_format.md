@@ -304,9 +304,9 @@ The Parquet scheme has the columns: `frame_id`, `actors`, where actors is a mapp
             0.1350652575492859
         ],
         "angular_velocity": [                    // the angular velocity (x,y,z) in right-handed world coordinates [radians/second]
-            -1.7477592336945236e-05,
-            -1.4797206858929712e-05,
-            1.899147328288109e-08
+            -3.050415316010e-07,
+            -2.582599797870e-07,
+            3.314637385908e-10
         ],
         "type_id": "vehicle.bmw.grandtourer",    // the CARLA blueprint name of the actor
         "role_name": "background"                // the role name of the actor
@@ -315,6 +315,8 @@ The Parquet scheme has the columns: `frame_id`, `actors`, where actors is a mapp
 ```
 
 *Note:* The `role_name` of environment vehicles (parking vehicles in a map) is always reported as "parking".
+
+*Note:* CARLA reports the angular velocity of actors in degrees/second, although its Python API documentation states radians/second. The CDR converts the angular velocity to radians/second.
 
 ##### Combined File (Parquet)
 
@@ -512,7 +514,7 @@ semseg_ids = pc.get_attribute_by_name('semseg_id')['data']
 
 #### Trajectories
 
-The trajectories of all actors in the world are stored for every tick of the simulation, i.e. potentially at a higher frequency than other sensors. Each file contains the corresponding timestamp and information about every actor, which has the same attributes as [3D Bounding Boxes](#3d-bounding-boxes), i.e. all geometric and kinematic attributes are given in the right-handed world coordinate system (see [Coordinate System Conventions](#coordinate-system-conventions)).
+The trajectories of all actors in the world are stored for every tick of the simulation, i.e. potentially at a higher frequency than other sensors. Each file contains the corresponding timestamp and information about every actor, which has the same attributes as [3D Bounding Boxes](#3d-bounding-boxes), i.e. all geometric and kinematic attributes are given in the right-handed world coordinate system (see [Coordinate System Conventions](#coordinate-system-conventions)). As for 3D bounding boxes, the angular velocity is stored in radians/second.
 
 * **key**: `TRAJECTORIES`
 * **format:**

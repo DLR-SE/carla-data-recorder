@@ -476,8 +476,9 @@ def actor_states():
     """
     Returns the state of the actors, whose geometric and kinematic attributes shall be validated.
 
-    The attributes are specified in CARLA's left-handed coordinate system, while the `expected` entries
-    contain the hard-coded attributes in the right-handed coordinate system that shall be written by the CDR.
+    The attributes are specified in CARLA's left-handed coordinate system and the angular velocities are specified
+    in degrees/second, as reported by CARLA. The `expected` entries contain the hard-coded attributes in the
+    right-handed coordinate system and radians/second that shall be written by the CDR.
     """
     return {
         # Rotated actor with a centered bounding box
@@ -493,7 +494,7 @@ def actor_states():
                 'rot': Quaternion(0.70710678, 0., 0., -0.70710678),
                 'velocity': np.array((1., -2., 3.)),
                 'acceleration': np.array((0.5, 0.25, 9.81)),
-                'angular_velocity': np.array((-0.1, 0.2, -0.3)),
+                'angular_velocity': np.array((-0.001745329252, 0.003490658504, -0.005235987756)),
             },
         },
         # Rotated actor with an offset bounding box
@@ -509,7 +510,7 @@ def actor_states():
                 'rot': Quaternion(0., 0., 0., -1.),
                 'velocity': np.array((0., -5., 0.)),
                 'acceleration': np.array((-1., 0., 0.5)),
-                'angular_velocity': np.array((0., 0.7, 0.)),
+                'angular_velocity': np.array((0., 0.012217304764, 0.)),
             },
         },
         # Rotated walker with a centered bounding box
@@ -525,7 +526,7 @@ def actor_states():
                 'rot': Quaternion(0.92387953, 0., 0., 0.38268343),
                 'velocity': np.array((1.5, -1.5, 0.)),
                 'acceleration': np.array((0., 0., 9.81)),
-                'angular_velocity': np.array((0., 0., -1.)),
+                'angular_velocity': np.array((0., 0., -0.017453292520)),
             },
         },
         # Rotated actor with an offset bounding box
@@ -541,7 +542,7 @@ def actor_states():
                 'rot': Quaternion(0.70710678, 0., 0., -0.70710678),
                 'velocity': np.array((0., 10., 0.)),
                 'acceleration': np.array((2., 0., 0.)),
-                'angular_velocity': np.array((-0.3, 0., 0.2)),
+                'angular_velocity': np.array((-0.005235987756, 0., 0.003490658504)),
             },
         },
         # Actor without rotation
@@ -557,7 +558,7 @@ def actor_states():
                 'rot': Quaternion(1., 0., 0., 0.),
                 'velocity': np.array((3., 0., 0.)),
                 'acceleration': np.array((0., 0., -9.81)),
-                'angular_velocity': np.array((0., 0.4, 0.)),
+                'angular_velocity': np.array((0., 0.006981317008, 0.)),
             },
         },
     }

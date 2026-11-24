@@ -344,6 +344,11 @@ def world_snapshot_to_dict(world_snapshot: carla.WorldSnapshot, world: carla.Wor
         acceleration[1] *= -1
         angular_velocity = carla_vector3d_to_array(actor_snapshot.get_angular_velocity())
         angular_velocity[[0, 2]] *= -1
+        # Note: CARLA's ActorSnapshot.get_angular_velocity() returns degrees/second (the C++ implementation uses
+        # GetPhysicsAngularVelocityInDegrees()), despite the official Python API documentation stating radians/second.
+        # The CDR stores all actor angular velocities in radians/second. (In contrast, the IMU gyroscope is natively
+        # in radians/second.)
+        angular_velocity = np.deg2rad(angular_velocity)
 
         # The instance segmentation only supports 16-bit IDs, so we also wrap the actor ID by 16-bits.
         # This is not a real problem, since at least for our experiments, CARLA is not able to simulate more than
