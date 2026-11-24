@@ -472,15 +472,118 @@ def actor_properties():
 
 
 @pytest.fixture
-def world(frame, timestamp, actor_properties):
+def actor_states():
+    """
+    Returns the state of the actors, whose geometric and kinematic attributes shall be validated.
+
+    The attributes are specified in CARLA's left-handed coordinate system, while the `expected` entries
+    contain the hard-coded attributes in the right-handed coordinate system that shall be written by the CDR.
+    """
+    return {
+        # Rotated actor with a centered bounding box
+        5: {
+            'transform': carla.Transform(carla.Location(10., -20., 0.5), carla.Rotation(yaw=90.)),
+            'bounding_box': carla.BoundingBox(carla.Location(), carla.Vector3D(2.5, 1., 0.75)),
+            'velocity': carla.Vector3D(1., 2., 3.),
+            'acceleration': carla.Vector3D(0.5, -0.25, 9.81),
+            'angular_velocity': carla.Vector3D(0.1, 0.2, 0.3),
+            'expected': {
+                'center': np.array((10., 20., 0.5)),
+                'size': np.array((5., 2., 1.5)),
+                'rot': Quaternion(0.70710678, 0., 0., -0.70710678),
+                'velocity': np.array((1., -2., 3.)),
+                'acceleration': np.array((0.5, 0.25, 9.81)),
+                'angular_velocity': np.array((-0.1, 0.2, -0.3)),
+            },
+        },
+        # Rotated actor with an offset bounding box
+        6: {
+            'transform': carla.Transform(carla.Location(-5., 7.5, 1.), carla.Rotation(yaw=180.)),
+            'bounding_box': carla.BoundingBox(carla.Location(1., -0.5, 0.25), carla.Vector3D(2., 1., 0.8)),
+            'velocity': carla.Vector3D(0., 5., 0.),
+            'acceleration': carla.Vector3D(-1., 0., 0.5),
+            'angular_velocity': carla.Vector3D(0., 0.7, 0.),
+            'expected': {
+                'center': np.array((-6., -8., 1.25)),
+                'size': np.array((4., 2., 1.6)),
+                'rot': Quaternion(0., 0., 0., -1.),
+                'velocity': np.array((0., -5., 0.)),
+                'acceleration': np.array((-1., 0., 0.5)),
+                'angular_velocity': np.array((0., 0.7, 0.)),
+            },
+        },
+        # Rotated walker with a centered bounding box
+        8: {
+            'transform': carla.Transform(carla.Location(3., 4., 0.9), carla.Rotation(yaw=-45.)),
+            'bounding_box': carla.BoundingBox(carla.Location(), carla.Vector3D(0.3, 0.3, 0.9)),
+            'velocity': carla.Vector3D(1.5, 1.5, 0.),
+            'acceleration': carla.Vector3D(0., 0., 9.81),
+            'angular_velocity': carla.Vector3D(0., 0., 1.),
+            'expected': {
+                'center': np.array((3., -4., 0.9)),
+                'size': np.array((0.6, 0.6, 1.8)),
+                'rot': Quaternion(0.92387953, 0., 0., 0.38268343),
+                'velocity': np.array((1.5, -1.5, 0.)),
+                'acceleration': np.array((0., 0., 9.81)),
+                'angular_velocity': np.array((0., 0., -1.)),
+            },
+        },
+        # Rotated actor with an offset bounding box
+        9: {
+            'transform': carla.Transform(carla.Location(100., 50., 2.), carla.Rotation(yaw=90.)),
+            'bounding_box': carla.BoundingBox(carla.Location(0., 1., 0.), carla.Vector3D(6., 1.5, 1.6)),
+            'velocity': carla.Vector3D(0., -10., 0.),
+            'acceleration': carla.Vector3D(2., 0., 0.),
+            'angular_velocity': carla.Vector3D(0.3, 0., -0.2),
+            'expected': {
+                'center': np.array((99., -50., 2.)),
+                'size': np.array((12., 3., 3.2)),
+                'rot': Quaternion(0.70710678, 0., 0., -0.70710678),
+                'velocity': np.array((0., 10., 0.)),
+                'acceleration': np.array((2., 0., 0.)),
+                'angular_velocity': np.array((-0.3, 0., 0.2)),
+            },
+        },
+        # Actor without rotation
+        10: {
+            'transform': carla.Transform(carla.Location(-30., -40., 1.5)),
+            'bounding_box': carla.BoundingBox(carla.Location(), carla.Vector3D(4., 1.2, 1.5)),
+            'velocity': carla.Vector3D(3., 0., 0.),
+            'acceleration': carla.Vector3D(0., 0., -9.81),
+            'angular_velocity': carla.Vector3D(0., 0.4, 0.),
+            'expected': {
+                'center': np.array((-30., 40., 1.5)),
+                'size': np.array((8., 2.4, 3.)),
+                'rot': Quaternion(1., 0., 0., 0.),
+                'velocity': np.array((3., 0., 0.)),
+                'acceleration': np.array((0., 0., -9.81)),
+                'angular_velocity': np.array((0., 0.4, 0.)),
+            },
+        },
+    }
+
+
+@pytest.fixture
+def world(frame, timestamp, actor_properties, actor_states):
     world = WorldMock(frame, timestamp)
     for type_id, role_name, _ in actor_properties.values():
         world.spawn_actor(ActorBlueprintMock(type_id, {'role_name': role_name} if role_name != '' else None),
                           carla.Transform())
+
+    # Assign a known pose and motion to the actors, whose attributes shall be validated
+    for actor_id, state in actor_states.items():
+        actor = world.get_actor(actor_id)
+        assert actor is not None
+        actor.transform = state['transform']
+        actor.bounding_box = state['bounding_box']
+        actor.velocity = state['velocity']
+        actor.acceleration = state['acceleration']
+        actor.angular_velocity = state['angular_velocity']
+
     return world
 
 
-def test_world_snapshot_to_dict(world, actor_properties):
+def test_world_snapshot_to_dict(world, actor_properties, actor_states):
     world.tick()
     world_snapshot = world.get_snapshot()
     frame, timestamp = world_snapshot.frame, world_snapshot.timestamp.elapsed_seconds
@@ -497,7 +600,12 @@ def test_world_snapshot_to_dict(world, actor_properties):
         assert res['actors'][actor_id]['type_id'] == type_id
         assert res['actors'][actor_id]['role_name'] ==  role_name
         assert res['actors'][actor_id]['class_id'] == class_id
-        # TODO Also test: center, size, rot, velocity, acceleration, angular_velocity?
+
+    # Check that all geometric and kinematic attributes are converted to a right-handed coordinate system.
+    for actor_id, state in actor_states.items():
+        actor_info = res['actors'][actor_id]
+        for attribute, expected in state['expected'].items():
+            assert is_close(actor_info[attribute], expected), f'Wrong {attribute} for actor {actor_id}'
 
 
 def test_world_snapshot_to_dict_unknown_actor(world, actor_properties):
