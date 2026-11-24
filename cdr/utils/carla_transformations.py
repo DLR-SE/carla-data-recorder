@@ -337,10 +337,13 @@ def world_snapshot_to_dict(world_snapshot: carla.WorldSnapshot, world: carla.Wor
         assert bb is not None  # Holds, since we already filtered for vehicles and walkers (just for pylint)
         bb_loc_g, bb_rot_g, bb_size_lwh = bb
 
-        # Function to transform other local vectors to global ones
-        actor_transform = actor_snapshot.get_transform()
-        def transform_to_global(vector: carla.Vector3D) -> np.ndarray:
-            return carla_vector3d_to_array(actor_transform.transform_vector(vector))
+        # Convert attributes to right-handed coordinate system
+        velocity = carla_vector3d_to_array(actor_snapshot.get_velocity())
+        velocity[1] *= -1
+        acceleration = carla_vector3d_to_array(actor_snapshot.get_acceleration())
+        acceleration[1] *= -1
+        angular_velocity = carla_vector3d_to_array(actor_snapshot.get_angular_velocity())
+        angular_velocity[[0, 2]] *= -1
 
         # The instance segmentation only supports 16-bit IDs, so we also wrap the actor ID by 16-bits.
         # This is not a real problem, since at least for our experiments, CARLA is not able to simulate more than
@@ -351,9 +354,9 @@ def world_snapshot_to_dict(world_snapshot: carla.WorldSnapshot, world: carla.Wor
             'center': carla_location_to_array(bb_loc_g),
             'size': bb_size_lwh,
             'rot': carla_rotation_to_quaternion(bb_rot_g, is_camera=False),
-            'velocity': transform_to_global(actor_snapshot.get_velocity()),
-            'acceleration': transform_to_global(actor_snapshot.get_acceleration()),
-            'angular_velocity': transform_to_global(actor_snapshot.get_angular_velocity()),
+            'velocity': velocity,
+            'acceleration': acceleration,
+            'angular_velocity': angular_velocity,
             'type_id': actor_type_id,
             'role_name': actor_role_name
         }
